@@ -1,14 +1,53 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Animal IA</title><link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projetinho IA</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body><main class="app">
-<header><div class="logo">🐾</div><div><h1>Animal IA</h1><p>Crie vídeos de animais para Shorts, TikTok e Kwai.</p></div></header>
+<body>
+<main class="app">
+<header>
+  <div class="logo">✨🤖</div>
+  <div>
+    <h1>Projetinho IA</h1>
+    <p>Crie vídeos com IA: animais, personagens, pessoas fictícias, histórias e muito mais.</p>
+  </div>
+</header>
 <section class="card">
-<label>Sua ideia</label><textarea id="idea" placeholder="Ex.: Um gatinho branco vira entregador e se mete em uma confusão engraçada."></textarea>
-<div class="grid"><div><label>Duração</label><select id="duration"><option value="6">6 segundos</option><option value="8">8 segundos</option><option value="10">10 segundos</option></select></div><div><label>Formato</label><select id="ratio"><option value="9:16">9:16 — Shorts/TikTok/Kwai</option><option value="16:9">16:9</option><option value="1:1">1:1</option></select></div></div>
-<button id="generate">🎬 GERAR VÍDEO</button><div id="status" class="status">Pronto para criar.</div>
-<div id="result" hidden><video id="video" controls playsinline></video><a id="download" class="download" download="animal-ia.mp4">⬇ Baixar MP4</a></div>
-</section></main><script src="app.js"></script></body></html>
+  <label for="idea">Sua ideia</label>
+  <textarea id="idea" placeholder="Ex.: Uma criança fictícia brinca com um cachorro no parque enquanto começa uma chuva engraçada."></textarea>
+  <small>Você pode pedir animais, personagens, pessoas fictícias, crianças fictícias, lugares, histórias, cenas engraçadas e muito mais.</small>
+
+  <div class="grid">
+    <div>
+      <label for="duration">Duração</label>
+      <select id="duration">
+        <option value="6">6 segundos</option>
+        <option value="8">8 segundos</option>
+        <option value="10">10 segundos</option>
+      </select>
+    </div>
+    <div>
+      <label for="ratio">Formato</label>
+      <select id="ratio">
+        <option value="9:16">9:16 — Shorts/TikTok/Kwai</option>
+        <option value="16:9">16:9 — YouTube</option>
+        <option value="1:1">1:1 — Quadrado</option>
+      </select>
+    </div>
+  </div>
+
+  <button id="generate">🎬 GERAR VÍDEO COM ÁUDIO</button>
+  <div id="status" class="status">Pronto para criar.</div>
+
+  <div id="result" hidden>
+    <video id="video" controls playsinline></video>
+    <a id="download" class="download" download="projetinho-ia.mp4">⬇ Baixar MP4</a>
+  </div>
+</section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
