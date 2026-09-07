@@ -1,1 +1,1 @@
-
+export default async function handler(req,res){if(req.method!=='POST')return res.status(405).json({error:'Método não permitido.'});const key=process.env.PIXAZO_API_KEY;if(!key)return res.status(500).json({error:'PIXAZO_API_KEY não configurada no servidor.'});try{const r=await fetch('https://gateway.pixazo.ai/ltx/text-to-video',{method:'POST',headers:{'Content-Type':'application/json','Ocp-Apim-Subscription-Key':key},body:JSON.stringify(req.body)});const text=await r.text();res.status(r.status).send(text)}catch(e){res.status(500).json({error:e.message})}}
