@@ -1,8 +1,6 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Método não permitido."
-    });
+    return res.status(405).json({ error: "Método não permitido." });
   }
 
   const key = process.env.MAGIC_HOUR_API_KEY;
@@ -15,16 +13,16 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body || {};
-
     const duration = Number(body.duration) || 6;
     const aspectRatio = body.aspect_ratio || "9:16";
 
     const payload = {
-      name: "Animal IA video",
+      name: "Projetinho IA video",
       end_seconds: duration,
       aspect_ratio: aspectRatio,
+      model: "ltx-2.5",
+      audio: true,
       resolution: "480p",
-      model: "default",
       style: {
         prompt: String(body.prompt || "")
       }
@@ -35,8 +33,8 @@ export default async function handler(req, res) {
       {
         method: "POST",
         headers: {
-          "Accept": "application/json",
-          "Authorization": `Bearer ${key}`,
+          Accept: "application/json",
+          Authorization: `Bearer ${key}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
@@ -44,12 +42,8 @@ export default async function handler(req, res) {
     );
 
     const text = await response.text();
-
     return res.status(response.status).send(text);
-
   } catch (error) {
-    return res.status(500).json({
-      error: error.message
-    });
+    return res.status(500).json({ error: error.message });
   }
 }
