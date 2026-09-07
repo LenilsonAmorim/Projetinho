@@ -1,7 +1,1 @@
-{
-  "name":"animal-ia-web",
-  "version":"1.0.0",
-  "type":"module",
-  "scripts":{"start":"node server.js"},
-  "dependencies":{"express":"^5.1.0"}
-}
+{"name":"animal-ia","version":"2.0.0","private":true}
