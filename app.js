@@ -9,14 +9,13 @@ Support any subject requested by the user: fictional people, fictional children,
 
 Keep the scene family-friendly and visually clear. Do not add captions, logos, watermarks or text on screen unless the user explicitly asks for text.
 
-Generate synchronized audio that matches the action: natural ambience, sound effects, background music when appropriate, and character/environment sounds. If the prompt asks for speech, generate appropriate spoken dialogue and synchronize it with the scene.`;
+Generate synchronized audio that matches the action, including natural ambience, sound effects, background music when appropriate, and character/environment sounds. If the prompt asks for speech, generate appropriate spoken dialogue in the requested language with synchronized lip movement.`;
 }
 
 async function api(path, options = {}) {
   const r = await fetch(path, options);
   const text = await r.text();
   let data;
-
   try {
     data = JSON.parse(text);
   } catch {
@@ -24,13 +23,11 @@ async function api(path, options = {}) {
   }
 
   if (!r.ok) {
-    throw new Error(
-      data.error?.message || data.error || data.msg || data.message || `HTTP ${r.status}`
-    );
+    throw new Error(data.error?.message || data.error || data.msg || data.message || `HTTP ${r.status}`);
   }
 
-  if (data.code !== undefined && data.code !== 0) {
-    throw new Error(data.msg || data.error || "A API recusou a geração.");
+  if (data.code !== undefined && data.code !== 0 && data.code !== 200) {
+    throw new Error(data.msg || data.message || data.error || "A API recusou a geração.");
   }
 
   return data;
@@ -62,11 +59,7 @@ $("generate").onclick = async () => {
 
     let id = data.data?.task_id || data.task_id || data.id;
 
-    if (!id) {
-      throw new Error("A API não devolveu o ID da geração.");
-    }
-
-    let finished = false;
+    if (!id) throw new Error("A API não devolveu o ID da geração.");
 
     for (let i = 0; i < 120; i++) {
       await new Promise(resolve => setTimeout(resolve, 3000));
@@ -83,35 +76,22 @@ $("generate").onclick = async () => {
       setStatus(`Gerando vídeo com áudio... ${status || "PROCESSANDO"}`);
 
       if (["SUCCEEDED", "SUCCESS", "COMPLETED", "COMPLETE"].includes(status)) {
-        finished = true;
-        break;
+        const url = info.result_urls?.[0] || info.result_url || info.output?.url || info.output_url || info.url;
+        if (!url) throw new Error("A geração terminou, mas a API não devolveu o MP4.");
+
+        $("video").src = url;
+        $("download").href = url;
+        $("result").hidden = false;
+        setStatus("✅ Vídeo pronto com áudio!");
+        return;
       }
 
       if (["FAILED", "ERROR", "CANCELED", "CANCELLED"].includes(status)) {
-        throw new Error(info.error || info.msg || "A geração do vídeo falhou.");
+        throw new Error(info.error || info.error_message || "A geração do vídeo falhou.");
       }
     }
 
-    if (!finished) {
-      throw new Error("A geração demorou mais que o tempo limite. Tente novamente.");
-    }
-
-    const info = data.data || data;
-    const url =
-      info.result_urls?.[0] ||
-      info.result_url ||
-      info.output?.url ||
-      info.output_url ||
-      info.url;
-
-    if (!url) {
-      throw new Error("O vídeo terminou, mas a API não devolveu o MP4.");
-    }
-
-    $("video").src = url;
-    $("download").href = url;
-    $("result").hidden = false;
-    setStatus("✅ Vídeo pronto com áudio!");
+    throw new Error("A geração demorou mais que o tempo limite. Tente novamente.");
   } catch (e) {
     setStatus("❌ " + e.message, true);
   } finally {
