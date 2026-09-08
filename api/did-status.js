@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       {
         method: "GET",
         headers: {
-          Authorization: `Basic ${Buffer.from(key).toString("base64")}`,
+          Authorization: `Basic ${key}`,
           Accept: "application/json"
         }
       }
