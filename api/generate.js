@@ -6,33 +6,28 @@ export default async function handler(req, res) {
   const key = process.env.WIZZX_API_KEY;
 
   if (!key) {
-    return res.status(500).json({
-      error: "WIZZX_API_KEY não configurada no servidor."
-    });
+    return res.status(500).json({ error: "WIZZX_API_KEY não configurada no servidor." });
   }
 
   try {
     const body = req.body || {};
     const duration = Number(body.duration) || 5;
-    const allowedDurations = [5, 8, 12];
 
-    if (!allowedDurations.includes(duration)) {
-      return res.status(400).json({ error: "Duração inválida." });
+    if (duration < 4 || duration > 12) {
+      return res.status(400).json({ error: "A duração deve estar entre 4 e 12 segundos." });
     }
 
-    const allowedRatios = ["16:9", "4:3", "1:1", "3:4", "9:16", "21:9"];
-    const aspectRatio = allowedRatios.includes(body.aspect_ratio)
-      ? body.aspect_ratio
-      : "9:16";
+    const allowedRatios = ["16:9", "9:16", "1:1", "4:3"];
+    const aspectRatio = allowedRatios.includes(body.aspect_ratio) ? body.aspect_ratio : "9:16";
 
+    // Campos alinhados ao contrato HTTP atual da Wizzx para Seedance 1.5 Pro.
     const payload = {
       prompt: String(body.prompt || ""),
       type: "text-to-video",
       duration,
       resolution: "720p",
       aspect_ratio: aspectRatio,
-      generate_audio: true,
-      watermark: false
+      generate_audio: true
     };
 
     const response = await fetch(
@@ -40,7 +35,6 @@ export default async function handler(req, res) {
       {
         method: "POST",
         headers: {
-          Accept: "application/json",
           Authorization: `Bearer ${key}`,
           "Content-Type": "application/json"
         },
