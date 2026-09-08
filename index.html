@@ -15,6 +15,7 @@
     <p>Crie vídeos com IA: animais, personagens, pessoas fictícias, histórias e muito mais.</p>
   </div>
 </header>
+
 <section class="card">
   <label for="idea">Sua ideia</label>
   <textarea id="idea" placeholder="Ex.: Uma criança fictícia brinca com um cachorro no parque enquanto começa uma chuva engraçada."></textarea>
@@ -24,9 +25,9 @@
     <div>
       <label for="duration">Duração</label>
       <select id="duration">
-        <option value="6">6 segundos</option>
-        <option value="8">8 segundos</option>
-        <option value="10">10 segundos</option>
+        <option value="5">5 segundos — 110 créditos</option>
+        <option value="8">8 segundos — 176 créditos</option>
+        <option value="12">12 segundos — 264 créditos</option>
       </select>
     </div>
     <div>
@@ -35,9 +36,13 @@
         <option value="9:16">9:16 — Shorts/TikTok/Kwai</option>
         <option value="16:9">16:9 — YouTube</option>
         <option value="1:1">1:1 — Quadrado</option>
+        <option value="3:4">3:4 — Vertical</option>
+        <option value="4:3">4:3 — Horizontal</option>
       </select>
     </div>
   </div>
+
+  <div class="notice">🔊 O áudio está ativado automaticamente. O vídeo é gerado em 480p para economizar créditos.</div>
 
   <button id="generate">🎬 GERAR VÍDEO COM ÁUDIO</button>
   <div id="status" class="status">Pronto para criar.</div>

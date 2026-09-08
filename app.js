@@ -3,10 +3,13 @@ const $ = id => document.getElementById(id);
 function promptFinal(idea) {
   return `Create a short social media video based exactly on this idea: ${idea}
 
-Use high-quality cinematic AI video, coherent characters and appearance, natural motion, expressive acting, detailed environment, good composition and smooth camera movement. This is not limited to animals: support fictional people, fictional children, animals, creatures, characters, objects, places, vehicles, fantasy scenes, comedy, action and storytelling.
+Use high-quality cinematic AI video, coherent characters and appearance, natural motion, expressive acting, detailed environment, good composition and smooth camera movement.
+
+Support any subject requested by the user: fictional people, fictional children, animals, creatures, characters, objects, places, vehicles, fantasy scenes, comedy, action and storytelling.
 
 Keep the scene family-friendly and visually clear. Do not add captions, logos, watermarks or text on screen unless the user explicitly asks for text.
-Generate synchronized audio when supported: natural ambience, sound effects and appropriate character/environment sounds that match the action. If the prompt asks for speech, create appropriate spoken dialogue when supported.`;
+
+Generate synchronized audio that matches the action: natural ambience, sound effects, background music when appropriate, and character/environment sounds. If the prompt asks for speech, generate appropriate spoken dialogue and synchronize it with the scene.`;
 }
 
 async function api(path, options = {}) {
@@ -22,8 +25,12 @@ async function api(path, options = {}) {
 
   if (!r.ok) {
     throw new Error(
-      data.error?.message || data.error || data.message || `HTTP ${r.status}`
+      data.error?.message || data.error || data.msg || data.message || `HTTP ${r.status}`
     );
+  }
+
+  if (data.code !== undefined && data.code !== 0) {
+    throw new Error(data.msg || data.error || "A API recusou a geração.");
   }
 
   return data;
@@ -53,38 +60,49 @@ $("generate").onclick = async () => {
       })
     });
 
-    const id = data.id || data.request_id;
+    let id = data.data?.task_id || data.task_id || data.id;
 
     if (!id) {
       throw new Error("A API não devolveu o ID da geração.");
     }
 
+    let finished = false;
+
     for (let i = 0; i < 120; i++) {
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      data = await api("/api/status/" + encodeURIComponent(id));
+      data = await api("/api/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task_id: id })
+      });
 
-      const status = String(data.status || data.state || "").toLowerCase();
-      setStatus(`Gerando vídeo com áudio... ${status || "processando"}`);
+      const info = data.data || data;
+      const status = String(info.status || "").toUpperCase();
 
-      if (["complete", "completed", "success", "succeeded"].includes(status)) {
+      setStatus(`Gerando vídeo com áudio... ${status || "PROCESSANDO"}`);
+
+      if (["SUCCEEDED", "SUCCESS", "COMPLETED", "COMPLETE"].includes(status)) {
+        finished = true;
         break;
       }
 
-      if (["error", "failed", "canceled"].includes(status)) {
-        throw new Error(
-          data.error?.message || data.error || "A geração do vídeo falhou."
-        );
+      if (["FAILED", "ERROR", "CANCELED", "CANCELLED"].includes(status)) {
+        throw new Error(info.error || info.msg || "A geração do vídeo falhou.");
       }
     }
 
+    if (!finished) {
+      throw new Error("A geração demorou mais que o tempo limite. Tente novamente.");
+    }
+
+    const info = data.data || data;
     const url =
-      data.downloads?.[0]?.url ||
-      data.downloads?.[0] ||
-      data.output?.media_url?.[0] ||
-      data.output?.url ||
-      data.output_url ||
-      data.url;
+      info.result_urls?.[0] ||
+      info.result_url ||
+      info.output?.url ||
+      info.output_url ||
+      info.url;
 
     if (!url) {
       throw new Error("O vídeo terminou, mas a API não devolveu o MP4.");
