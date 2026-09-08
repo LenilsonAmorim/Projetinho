@@ -1,6 +1,8 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Método não permitido." });
+    return res.status(405).json({
+      error: "Método não permitido."
+    });
   }
 
   const key = process.env.D_ID_API_KEY;
@@ -38,13 +40,17 @@ export default async function handler(req, res) {
       payload.source_url = String(source_url).trim();
     }
 
-    const response = await fetch("https://api.d-id.com/talks", {
-      method: "POST",
-      headers: Authorization: `Basic ${key}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    const response = await fetch(
+      "https://api.d-id.com/talks",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${key}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
 
     const data = await response.json();
 
