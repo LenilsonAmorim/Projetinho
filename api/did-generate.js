@@ -26,6 +26,7 @@ export default async function handler(req, res) {
     }
 
     const payload = {
+      source_url: String(source_url || "").trim(),
       script: {
         type: "text",
         input: String(text).trim(),
@@ -36,8 +37,10 @@ export default async function handler(req, res) {
       }
     };
 
-    if (source_url && String(source_url).trim()) {
-      payload.source_url = String(source_url).trim();
+    if (!payload.source_url) {
+      return res.status(400).json({
+        error: "URL da imagem não informada."
+      });
     }
 
     const response = await fetch(
@@ -46,13 +49,24 @@ export default async function handler(req, res) {
         method: "POST",
         headers: {
           Authorization: `Basic ${key}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Accept: "application/json"
         },
         body: JSON.stringify(payload)
       }
     );
 
-    const data = await response.json();
+    const responseText = await response.text();
+
+    let data;
+
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      data = {
+        raw: responseText
+      };
+    }
 
     if (!response.ok) {
       return res.status(response.status).json({
@@ -60,7 +74,11 @@ export default async function handler(req, res) {
           data.description ||
           data.message ||
           data.kind ||
-          "A D-ID recusou a geração."
+          data.error ||
+          responseText ||
+          "A D-ID recusou a geração.",
+        status: response.status,
+        details: data
       });
     }
 
