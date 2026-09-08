@@ -13,30 +13,14 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body || {};
-    const duration = Number(body.duration) || 5;
-    const allowedDurations = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const taskId = body.task_id;
 
-    if (!allowedDurations.includes(duration)) {
-      return res.status(400).json({ error: "Duração inválida. Use entre 4 e 12 segundos." });
+    if (!taskId) {
+      return res.status(400).json({ error: "task_id não informado." });
     }
 
-    const allowedRatios = ["16:9", "4:3", "1:1", "3:4", "9:16", "21:9"];
-    const aspectRatio = allowedRatios.includes(body.aspect_ratio)
-      ? body.aspect_ratio
-      : "9:16";
-
-    const payload = {
-      prompt: String(body.prompt || ""),
-      type: "text-to-video",
-      duration,
-      resolution: "480p",
-      aspect_ratio: aspectRatio,
-      generate_audio: true,
-      watermark: false
-    };
-
     const response = await fetch(
-      "https://api.wizzx.ai/api/v1/task/submit/seedance-1.5-pro",
+      "https://api.wizzx.ai/api/v1/task/status",
       {
         method: "POST",
         headers: {
@@ -44,7 +28,7 @@ export default async function handler(req, res) {
           Authorization: `Bearer ${key}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ task_id: taskId })
       }
     );
 
