@@ -14,10 +14,10 @@ export default async function handler(req, res) {
   try {
     const body = req.body || {};
     const duration = Number(body.duration) || 5;
-    const allowedDurations = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const allowedDurations = [5, 8, 12];
 
     if (!allowedDurations.includes(duration)) {
-      return res.status(400).json({ error: "Duração inválida. Use entre 4 e 12 segundos." });
+      return res.status(400).json({ error: "Duração inválida." });
     }
 
     const allowedRatios = ["16:9", "4:3", "1:1", "3:4", "9:16", "21:9"];
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       prompt: String(body.prompt || ""),
       type: "text-to-video",
       duration,
-      resolution: "480p",
+      resolution: "720p",
       aspect_ratio: aspectRatio,
       generate_audio: true,
       watermark: false
@@ -49,12 +49,7 @@ export default async function handler(req, res) {
     );
 
     const text = await response.text();
-
-    if (!response.ok) {
-      return res.status(response.status).send(text);
-    }
-
-    return res.status(200).send(text);
+    return res.status(response.status).send(text);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
