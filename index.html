@@ -8,6 +8,7 @@
 </head>
 <body>
 <main class="app">
+
 <header>
   <div class="logo">✨🤖</div>
   <div>
@@ -18,8 +19,16 @@
 
 <section class="card">
   <label for="idea">Sua ideia</label>
-  <textarea id="idea" placeholder="Ex.: Uma criança fictícia olha para a câmera e fala: Vini comédia! Depois dá uma risadinha."></textarea>
-  <small>Você pode pedir animais, personagens, pessoas fictícias, crianças fictícias, lugares, histórias, cenas engraçadas e muito mais.</small>
+
+  <textarea
+    id="idea"
+    placeholder="Ex.: Uma criança fictícia olha para a câmera e fala: Vini comédia! Depois dá uma risadinha."
+  ></textarea>
+
+  <small>
+    Você pode pedir animais, personagens, pessoas fictícias, crianças fictícias,
+    lugares, histórias, cenas engraçadas e muito mais.
+  </small>
 
   <div class="grid">
     <div>
@@ -29,6 +38,7 @@
         <option value="6">6 segundos — 300 créditos</option>
       </select>
     </div>
+
     <div>
       <label for="ratio">Formato</label>
       <select id="ratio">
@@ -40,17 +50,101 @@
     </div>
   </div>
 
-  <div class="notice">🔊 Áudio sincronizado ativado. A configuração atual usa 720p, conforme o contrato HTTP atual da Wizzx.</div>
+  <div class="notice">
+    🔊 Áudio sincronizado ativado. A configuração atual usa 720p,
+    conforme o contrato HTTP atual da Wizzx.
+  </div>
 
-  <button id="generate">🎬 GERAR VÍDEO COM ÁUDIO</button>
-  <div id="status" class="status">Pronto para criar.</div>
+  <button id="generate">
+    🎬 GERAR VÍDEO COM ÁUDIO
+  </button>
+
+  <div id="status" class="status">
+    Pronto para criar.
+  </div>
 
   <div id="result" hidden>
     <video id="video" controls playsinline></video>
-    <a id="download" class="download" download="projetinho-ia.mp4">⬇ Baixar MP4</a>
+
+    <a
+      id="download"
+      class="download"
+      download="projetinho-ia.mp4"
+    >
+      ⬇ Baixar MP4
+    </a>
   </div>
 </section>
+
+
+<!-- AVATAR FALANTE D-ID -->
+
+<section class="card avatar-card">
+
+  <h2>🗣️ Avatar Falante</h2>
+
+  <p>
+    Faça um personagem ou pessoa fictícia falar usando uma imagem.
+  </p>
+
+  <label for="avatarUrl">
+    Imagem do avatar
+  </label>
+
+  <input
+    id="avatarUrl"
+    type="url"
+    placeholder="Cole aqui a URL pública da imagem"
+  />
+
+  <small>
+    A imagem precisa estar hospedada na internet e ser acessível publicamente.
+  </small>
+
+
+  <label for="avatarText">
+    O que o avatar vai falar?
+  </label>
+
+  <textarea
+    id="avatarText"
+    placeholder="Ex.: Vini comédia! Depois dá uma risada."
+  ></textarea>
+
+
+  <button id="avatarGenerate">
+    🗣️ GERAR AVATAR FALANTE
+  </button>
+
+
+  <div id="avatarStatus" class="status">
+    Pronto para criar.
+  </div>
+
+
+  <div id="avatarResult" hidden>
+
+    <video
+      id="avatarVideo"
+      controls
+      playsinline
+    ></video>
+
+    <a
+      id="avatarDownload"
+      class="download"
+      download="avatar-falante.mp4"
+    >
+      ⬇ Baixar Avatar
+    </a>
+
+  </div>
+
+</section>
+
 </main>
+
 <script src="app.js"></script>
+
 </body>
 </html>
