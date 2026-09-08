@@ -40,8 +40,7 @@ export default async function handler(req, res) {
 
     const response = await fetch("https://api.d-id.com/talks", {
       method: "POST",
-      headers: {
-        Authorization: `Basic ${Buffer.from(key).toString("base64")}`,
+      headers: Authorization: `Basic ${key}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(payload)
